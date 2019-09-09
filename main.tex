@@ -1,0 +1,541 @@
+\documentclass[color=gray,base=hide,cn]{elegantbook}
+% \documentclass[color=gray,base=hide,pad,cn]{elegantbook}
+% \usepackage[utf8]{inputenc}
+\usepackage {tikz}
+\usetikzlibrary {positioning}
+% \usepackage{amsmath}
+% \usepackage{amsfonts}
+% \usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+% 
+% \usepackage{geometry}
+% \geometry{a5paper}
+
+% \newtheorem{defn}{定义}
+
+\title{图与机器学习}
+\subtitle{理论、模型与方法}
+\author{黄涛}
+\institute{中山大学数学学院}
+\date{}
+\version{}
+\extrainfo{在谈到如果要给后进的学弟学妹一个学习的方法的话，刘路回答到：“我只有一个想法，就是看淡分数，重在兴趣。”}
+\logo{}
+\cover{m.jpg}
+
+\begin{document}
+\maketitle
+
+
+\chapter*{序}
+图是重要的。
+\begin{flushright}
+笔者
+
+于康乐园
+\end{flushright}
+
+\tableofcontents
+% \newpage
+\mainmatter
+\hypersetup{pageanchor=true}
+\part{理论}
+\chapter{绪论}
+\section{图}
+图，一种常见的结构，可以用来表示一些现实中的数据或是表示数据之间的关系，图通常表示为由节点和边构成的二元组：$\mathcal{G} = (\mathcal{V},\mathcal{E})$，其中$\mathcal{V}$是节点的集合，而$\mathcal{E}$代表链接节点集合中某两元素的边，也就是说：$\mathcal{E} \subseteq \mathcal{P}(V \times V)$，其中$\mathcal{P}(\cdot)$代表幂集。
+这样的表示当然是方便理解的，但是当我们要用计算机处理和分析图时，这样的表示就过于抽象了，我们要注意到，在我们对包含$n$个元素的集合$\mathcal{V}$中的元素赋予$1$到$n$的编号的时候($\mathcal{V} = \{a_1, \cdots, a_n\}$)，图是可以由一个邻接矩阵$A \in \{0,1\}^{n\times n}$表示的：
+\begin{equation}
+    A_{i,j} = \left\{\begin{matrix}
+1, & \text{if } a_i \sim a_j \\ 
+0, & \text{otherwise}
+\end{matrix}\right.
+\end{equation}
+，其中$a_i \sim a_j$代表$(a_i,a_j) \in \mathcal{E} $， 即图中存在点$a_i$与$a_j$的连接。
+
+更一般的，当我们让每一个边$e\in \mathcal{E}$可以拥有一个权重，我们可以给出一个更广义的图的定义：
+\begin{definition}{图}{graph}
+    由包含$n$个元素的节点的集合$\mathcal{V}$和它的邻接矩阵$A \in {\mathbb{R}^{+}}^{n\times n}$所构成的二元组$\mathcal{G} = (\mathcal{V},A)$。
+\end{definition}
+在这里，我们约束它的边的权重是非负的，因为在许多的场景中，负的权重没有实际意义。
+
+\begin {figure}[h]
+\centering
+% \begin {tikzpicture}[-latex ,auto ,node distance =4 cm and 5cm ,on grid ,semithick ,
+% state/.style ={ circle ,top color =white , bottom color = processblue!20 ,draw,processblue , text=black , minimum width =1 cm}]
+\begin {tikzpicture}[-latex ,auto ,node distance =2 cm and 2.5cm , on grid ,semithick, state/.style ={ circle ,top color =white , bottom color = black!20 ,draw,black , text=black}]
+\node[state] (C)
+{$1$};
+\node[state] (A) [above left=of C] {$0$};
+\node[state] (B) [above right =of C] {$2$};
+\path (A) edge [loop left] node[left] {$1/4$} (A);
+\path (C) edge [bend left =25] node[below =0.15 cm] {$1/2$} (A);
+\path (A) edge [bend right = -15] node[below =0.15 cm] {$1/2$} (C);
+\path (A) edge [bend left =25] node[above] {$1/4$} (B);
+\path (B) edge [bend left =15] node[below =0.15 cm] {$1/2$} (A);
+\path (C) edge [bend left =15] node[below =0.15 cm] {$1/2$} (B);
+\path (B) edge [bend right = -25] node[below =0.15 cm] {$1/2$} (C);
+\end{tikzpicture}
+\caption{一种图：状态转移图}
+\label{fig:graph}
+\end{figure}
+
+一个经典的图的例子是图 \ref{fig:graph}中所示的状态转移图，每一个节点代表一种状态，而节点间的边（有向）$e_{ij}$表示从状态$a_i$到状态$a_j$的转移概率，其邻接矩阵可以表示为：
+\begin{equation*}
+    A = 
+    \begin{bmatrix} 
+        1/4 & 1/2 & 1/4\\
+        1/2 & 0 & 1/2\\
+        1/2 & 1/2 & 0
+    \end{bmatrix}
+\end{equation*}
+
+这样的一个矩阵的表示上的意义大致如此，那么与矩阵密切相关的它的乘法上的意义呢？
+首先，这样的矩阵左乘一组n个向量组成的行向量组就是将一次图变换作用于这n个向量所表示的节点，例如将邻接矩阵乘以邻接矩阵就可以得到该图的长度为2的可达矩阵，因为邻接矩阵本身就是长度为1的可达矩阵，其n个行向量代表每个节点与图中所有节点的连接关系，即其与图中所有节点长度为1的所有节点的数量，作用一次图变换之后就可以得到这一节点与图中所有节点长度为2的边的数量。
+
+\section{拉普拉斯算子}
+为了分析图，一种保持图的性质的离散微分算子是重要的：
+\begin{definition}{离散微分算子(图)}{discrete_differential_operators}
+    \begin{equation}
+        \frac{\partial f }{\partial e_{ij} }:=\sqrt{A_{i,j}}\left[f(j)-f(i)\right]
+    \end{equation}
+\end{definition}
+
+，而图上节点$i$的梯度的定义为向量:
+
+\begin{definition}{梯度(图)}{graph_gradient}
+    \begin{equation}
+\triangledown_i f := \left[\left\{\frac{\partial f }{\partial e_{ij} } \right\}_{e_{ij} \in \mathcal{E}}\right]
+    \end{equation}
+\end{definition}
+
+进一步，我们定义：
+\begin{definition}{局部变分(图)}{local_variation}
+    \begin{equation}
+        \begin{aligned}
+            \| \triangledown_i f \|_2 &:=\left[\sum_{e_{ij} \in \mathcal{E}} \left(\frac{\partial f }{\partial e_{ij} }\right)^2\right]^{\frac{1}{2}} \\
+            &~=\left[\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2\right]^{\frac{1}{2}}
+        \end{aligned}
+    \end{equation}
+\end{definition}
+，其中 $\mathcal{N}_i$ 代表节点 $v_i \in \mathcal{V}$ 的邻居集合。
+以及：
+\begin{definition}{离散$p$-迪利克雷形式}{dirichlet}
+    \begin{equation}
+        \begin{aligned}
+            S_p(f) & :=\frac{1}{p}\sum_{i \in \mathcal{V}}\| \triangledown_i f \|_2^p \\
+            & =\frac{1}{p}\sum_{i \in \mathcal{V}}\left[\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2\right]^{\frac{p}{2}}
+        \end{aligned}
+    \end{equation}
+\end{definition}
+
+值得注意的是， $p=2$时：
+\begin{equation}
+    \begin{aligned}
+        S_2(f) & = \frac{1}{2}\sum_{i \in \mathcal{V}}\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2 \\
+        & = \sum_{e_{ij} \in \mathcal{E}}A_{i,j}\left[f(j)-f(i)\right]^2 \\
+        & =f^T\mathcal{L} f
+    \end{aligned}
+\end{equation}
+
+
+\section{谱图理论}
+
+我们有了图之后，我们更愿意去了解如何分析一个图，我们会很自然地想到用经典的线性代数上的运算去处理这种能够用矩阵表示的问题。矩阵问题的一个经典的研究方式就是研究该矩阵的特征值与特征代数，如矩阵的谱一般，图的谱被定义为:
+\begin{definition}{谱（图）}{spectrum}
+    图的邻接矩阵的特征值及其重数：
+\begin{equation*}
+    \begin{pmatrix} 
+        \lambda_1 & \cdots & \lambda_k\\
+        r_1 & \cdots & r_k\\
+    \end{pmatrix}
+\end{equation*}
+对于无向图来说，其邻接矩阵是实对称阵，因而有：
+\begin{equation}
+    \sum_{i=1}^k r_i = n
+\end{equation}
+\end{definition}
+
+\chapter{图的构建}
+
+要研究图上的数据或是将原本的数据转变到图上进行研究，首要工作是从数据构建图\cite{silva2016machine}。图由两个部分构成，节点和边，节点即为各个数据，或者称作特征，而节点之间是否连接以及连接的权重，则由数据之间的关联程度，亦即相似度决定。
+
+数据之间的相似度通常有多种计算方法，以$n$维向量所表示的特征为例，有$L_2$距离和$Cosine$距离可以用于计算两特征之间的相似度。
+
+
+在离散的图上，即$A \in \{0,1\}^{n\times n}$的图上，通常使用$Cosine$相似度：
+
+\begin{definition}{$Cosine$相似度}{cosine}
+    即两特征之间的夹角的余弦值：
+    \begin{equation}
+        s^{Cosine}_{i,j} = \frac{\left |x_i \cdot x_j  \right |}{\left | x_i \right | \cdot \left | x_j \right |}
+    \end{equation}
+\end{definition}
+
+给出一个相似度的阈值$\theta$，如果两个节点之间的相似度大于这一阈值，则连接这两节点，否则不连接：
+
+\begin{equation}
+    A_{i,j} = \left\{\begin{matrix}
+1, & \text{if } s_{i,j} > \theta \\ 
+0, & \text{otherwise}
+\end{matrix}\right.
+\end{equation}
+
+而在连续的图上，则常使用$L_2$相似度;
+
+\begin{definition}{$L_2$相似度}{l2}
+    即两特征之间的$L_2$距离之相反数：
+    \begin{equation}
+        s^{L_2}_{i,j} = \exp \left ( \frac{\|x_i - x_j \|^2}{\mu^2}  \right )
+    \end{equation}
+    其中$\mu$是与数据分布有关的系数
+\end{definition}
+
+如若两特征间的距离小于某一阈值，则连接两节点，否则不连接：
+
+\begin{equation}
+    A_{i,j} = \left\{\begin{matrix}
+ s_{i,j}, & \text{if } \|x_i - x_j \|^2 < \theta \\ 
+0, & \text{otherwise}
+\end{matrix}\right.
+\end{equation}
+
+受限于计算资源，当数据特别多的时候，我们虽然能够用稀疏矩阵去存储这些数据所构成的图的邻接矩阵，但是直接去计算或处理这一图还是相当困难的，这个时候就需要对图进行分割。
+
+\chapter{图上的变换}
+
+\section{图上的傅里叶变换}
+
+要定义图上的卷积变换，首先我们要给出图上的傅里叶变换，即对于图的某一特征值$\lambda_{\ell}$，以及图的特征向量$\chi _\ell$和信号$f \in \mathbb{R}^n$，傅里叶变换$\hat{f}(\lambda_{\ell})$定义为：
+
+\begin{definition}{傅里叶变换（图）}{fourier}
+    \begin{equation}
+        \hat{f}(\lambda_{\ell}) = \left \langle \chi_\ell,f \right \rangle = \sum_{i=0}^{n-1}\chi_\ell(i)f(i)
+    \end{equation}
+\end{definition}
+
+对应地，图上的逆傅里叶变换定义为：
+
+\begin{definition}{逆傅里叶变换（图）}{ifourier}
+    \begin{equation}
+        f(i) = \sum_{\ell=0}^{n-1} \hat{f}(\lambda_{\ell}) \chi_{\ell}(i)
+    \end{equation}
+\end{definition}
+
+\part{模型}
+
+\chapter{图卷积神经网络}
+
+\cite{kipf2016semi}中提出的GCN模型核心在于将图上的卷积近似为：
+
+\begin{equation}
+g_\theta \star x \approx \theta_0'x + \theta_1 (L-I_n)x =  \theta_0'x + \theta_1 D^{-\frac{1}{2}} A D^{-\frac{1}{2}} x
+\end{equation}
+
+并假设
+
+\begin{equation}
+\theta = \theta_0' = -\theta_1' 
+\label{eqn:theta}
+\end{equation}
+
+得到
+
+\begin{equation}
+g_\theta \star x \approx \theta\left (I_n - D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \right) x
+\end{equation}
+
+并且在实际计算时使用如下的归一化技巧：
+
+\begin{equation}
+I_n - D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \rightarrow \tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}}  
+\end{equation}
+
+其中：
+
+\begin{equation}
+\tilde{A} = I_n + A
+\end{equation}
+
+令：
+\begin{equation}
+    \hat{A} = \tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}
+\end{equation}
+
+在图中的数据输入下一层全连接层之前，我们可以先对其做图上的卷积变换，这样以来每一层的计算公式便为：
+
+\begin{equation}
+{H}^{(k+1)} = f(H^{(k)}, A) = \sigma\left(\hat{A} H^{(k)}W^{(k)}\right)
+\end{equation}
+
+但是值得注意的一点是，不同的工作对于$\hat{A}$的选取是不同的，因为作者可以选择是否归一化，甚至可以在式\ref{eqn:theta}中假设不同的$\theta$的取值，例如假设$\theta_0' = \theta_1' $，从而得到：
+
+\begin{equation}
+\hat{A}' = {I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}
+\end{equation}
+
+\section{ANGPN}
+ANGPN（Adaptive Neighborhood Graph Propagation Network） \cite{Jiang2019SemisupervisedLW}是对图卷积神经网络的一种改进，通过在图的传播（Propagation）过程中使用在理论上更为优秀的计算方式，提升了图卷积神经网络的性能。
+GCN计算公式为：
+
+\begin{equation}
+{H}^{(k+1)} = \sigma\big(({I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}){H}^{(k)}{W}^{(k)}\big)
+\end{equation}
+
+可以将计算流程分解为：
+
+\begin{equation}
+{F}^{(k)} = ({I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}){H}^{(k)} \\ {H}^{(k+1)} = \sigma\big( {F}^{(k)}  {W}^{(k)}\big)
+\end{equation}
+
+令 $\hat{{A}} = {D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}$ ，可以将第一步的计算操作展开为
+
+\begin{equation}
+{f}_i = \sum\nolimits^n_{j=1}\hat{{A}}_{ij}{h}_j  +{h}_i
+\end{equation}
+
+这里我们会发现，这里我们难以控制是自身的feature重要还是邻居的feature重要，于是作者：
+
+\begin{equation}
+{f}_i^{(t+1)} = \alpha \sum^n\nolimits_{j=1}{A}_{ij} {f}_j^{(t)} + (1-\alpha){h}_i
+\end{equation}
+
+其中 $f^{(0)}_j = h_j$
+
+矩阵形式可以写为;
+
+\begin{equation}
+{F}^{(t+1)} = \alpha {A} {F}^{(t)} + (1-\alpha){H}
+\end{equation}
+
+迭代无穷次后，可得到稳定值为：
+
+\begin{equation}
+{F}^{*} = (1-\alpha) (I_n - \alpha A)^{-1}{H}
+\end{equation}
+
+要使得 $F$ 收敛，就是等价于解决如下优化问题：
+
+\begin{equation}
+\min_{F} \,\, \mathrm{Tr} (F^{T}(I_n - A) F) + \mu \|F - H\|^2_F
+\end{equation}
+其中 $\alpha = \frac{1}{1+\mu}$ , 
+\begin{equation}
+\|A\|_F=\sqrt{\sum_{i=1}^m\sum_{j=1}^n |a_{ij}|^2}=\sqrt{\operatorname{trace}(A^* A)}=\sqrt{\sum_{i=1}^{\min\{m,\,n\}} \sigma_{i}^2}
+\end{equation}
+，
+这里 $A^*$ 表示 $A$ 的共轭转置， $\sigma_{i}$ 是 $A$ 的奇异值
+
+一般来说，要计算图中节点间的相似度构成的邻接矩阵 $A$ 使手工的而且是难以设计的，
+令 $D^x_{ij}=\|x_i-x_j\|_2$ ，再引入代表数据 $i$ 和 $j$ 之间的相似程度的参数 $S_{ij}$ ， 可以将上述优化拓展为：
+
+\begin{equation}
+\begin{aligned}
+min_{S,F} & \,\,   \sum^n\nolimits_{i,j=1}D^x_{ij}S_{ij}+\gamma \|S\|^2_F+ \\ &  \beta \mathrm{Tr} (F^{T}(I_n - S) F) + \mu \|F - H\|^2_F  \\ &  s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0 
+\end{aligned}
+\end{equation}
+
+要解决这一优化问题，可以迭代地求出一个近似解：
+第一步，先对于给定的 $F$ ，求出最优的 $S$
+
+\begin{equation}
+\begin{aligned}
+\min_{S} & \, \sum^n\nolimits_{i,j=1}D^x_{ij}S_{ij}+\gamma \|S\|^2_F+ \beta \mathrm{Tr} (F^{T}(I_n - S) F)  
+\\ & s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0
+\end{aligned}
+\end{equation}
+等价于
+
+\begin{equation}
+\begin{aligned}
+\min_{S} & \, \sum^n\nolimits_{i,j=1}(D^x-\beta FF^T)_{ij}S_{ij}+\gamma \|S\|^2_F
+\\ & s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0
+\end{aligned}
+\end{equation}
+
+这一问题有一个闭合（解析）解：
+
+\begin{equation}
+S_{ij} = \max\big\{-\frac{1}{2\gamma}(D^x - \beta FF^T)_{ij} + \eta, 0\big\}% \big]_{+}
+\end{equation}
+其中 $\eta = \frac{1}{k} +\frac{1}{2k\gamma}\sum^k\nolimits_{j=1} D^x_{ij}$
+
+其后再根据公式更新 $F$
+
+\begin{algorithm}[h]
+\caption{ANGPN Propagation Layer}
+\begin{algorithmic}[1]
+\STATE \textbf{输入:} 特征矩阵 ${H}^{(k)}\in \mathbb{R}^{n\times d_k}$ , 距离矩阵 $D\in \mathbb{R}^{n\times n}$ , 权重 $W^{(k)}$, 参数 $\gamma, \beta$ 和 $\alpha$,  最大迭代次数 $T$
+\STATE \textbf{输出:} 特征矩阵 $H^{(k+1)}$
+\STATE 令 $F = H^{(k)}$
+\STATE 计算 $\eta$ %Initialize $F = H^{(k)}$
+$
+\textstyle \eta = \frac{1}{k} +\frac{1}{2k\gamma}\sum^k\nolimits_{j=1} D^x_{ij}
+$
+\FOR {$t=1,2\cdots T$}
+\STATE 计算 $S$\\
+$
+\ \ \ \ \ \ \ \ \ \ S_{ij} = \max\big\{-\frac{1}{2\gamma}(D^x - \beta FF^T)_{ij} + \eta, 0\big\}
+$
+\STATE 计算 $F$\\
+%\begin{center}
+$
+\ \ \ \ \ \ \ \ \ \ F = (\alpha S + (1-\alpha) I_n)H^{(k)}%  + (1-\alpha) H^{(k)} %(I_n - \alpha S)^{-1} H
+$
+%\end{center}
+\ENDFOR \label{code:recentEnd}
+\STATE 返回
+$
+H^{(k+1)} =\sigma\big( {F}  {W}^{(k)}\big)
+$
+% {H}^{(k+1)} = \sigma\big( {F}^{(k)}  {W}^{(k)}\big)
+%\STATE{Compute the final binary solution $\bar{\Xb}^*$ from $\Xb^*$ using a post-discretization step.}
+\emph{}
+\end{algorithmic}
+\end{algorithm}
+
+\section{Maximum a Posteriori}
+计算图上的邻接矩阵，特别是复杂的数据之间的邻接矩阵是一个值得深入探究的问题。有别于\cite{Jiang2019SemisupervisedLW}，\cite{gao2019exploring}提出了一种不依赖欧式距离的邻接矩阵优化方法：
+\begin{equation}
+\vec{\tilde{A}}_\text{MAP}(\mathbf{x}) = \arg \max_{\mathbf{\hat{A}}} \ f(\vec{x} \mid \mathbf{\hat{A}})g(\mathbf{\hat{A}})
+\end{equation}
+其中 $ f(\vec{x} \mid \mathbf{\hat{A}})$ 是相似度函数，而 $g(\mathbf{\hat{A}})$ 是 $\mathbf{\hat{A}}$ 的先验概率分布. 
+\subsection{相似度函数}
+首先作者假设图 $\mathcal{G}=\{\mathcal{V},\mathcal{E}\}$ 上的数据 $\vec{x} = (x_1, x_2, ..., x_n)^\top \in \mathbb{R}^n$  都是GMRF上的，即满足以下概率密度函数：
+\begin{equation}
+\pi(\vec{x}) = (2\pi)^{-\frac{n}{2}}|\mathbf{Q}|^{\frac{1}{2}} \text{exp}\left(-\frac{1}{2}(\vec{x}-\vec{\mu})^\top\mathbf{Q}(\vec{x}-\vec{\mu})\right)
+\end{equation}
+，并且 $Q_{i,j} \neq 0 \quad \Longleftrightarrow \quad \{i,j\} \in \mathcal{E}, \forall i \neq j$ 
+其中 $\mu$ 是均值， $\mathbf{Q} > 0$ 是精度矩阵(precision matrix)
+由于邻接矩阵代表了图上数据的关联性，与精度矩阵有关，作者假设：
+\begin{equation}
+\mathbf{Q} = \delta \mathcal{L} = \delta (\mathbf{I}_n - \mathbf{\hat{A}})
+\end{equation}
+因而相似度函数可以表示为：
+\begin{equation}
+ f(\vec{x} \mid \mathbf{\hat{A}}) =\beta \text{exp} \left(-\lambda_0 \vec{x}^\top ( \mathbf{I}_n - \mathbf{\hat{A}} ) \vec{x} \right)
+\end{equation}
+其中 $\beta=(2\pi)^{-\frac{n}{2}}|\mathbf{Q}|^{\frac{1}{2}}$ 并且 $\lambda_0 = \frac{\delta}{2}$
+值得我们注意的是：
+\begin{equation}
+\vec{x}^\top \mathcal{L} \vec{x} = \sum\limits_{i \sim j}a_{i,j}(x_i - x_j)^2
+\end{equation}
+其中 $a_{i,j}$ 代表 $x_i$ 和 $x_j$ 间边的权重， 而 $i \sim j$ 表示点 $i$ 和点 $j$相连
+\subsection{先验概率分布}
+作者认为先验概率分布由稀疏性约束(sparsity constraint) $ g_s(\mathbf{\hat{A}})$ 和性质约束(property constraint) $g_p(\mathbf{\hat{A}})$ 两部分组成：
+\begin{equation}
+g(\mathbf{\hat{A}}) = g_s(\mathbf{\hat{A}})g_p(\mathbf{\hat{A}})
+\end{equation}
+其中稀疏性约束是要求 $\mathbf{\hat{A}}$ 变得更加稀疏：
+\begin{equation}
+g_s(\mathbf{\hat{A}}) = \exp \left( -\lambda_1 \| \mathbf{\hat{A}} \|_1 \right)
+\end{equation}
+其中 $\| \cdot \|_1$ 是矩阵的 $l_1$-norm ， 而 $\lambda_1$ 是一个权重参数
+而作为图的邻接矩阵， $\mathbf{\hat{A}}$ 具有如下性质：
+\begin{align}
+\mathbf{\hat{A}}^\top  & = \mathbf{\hat{A}}\\
+\mathbf{\hat{A}}\mathbf{1}  & = \mathbf{1}\\
+\text{tr}(\mathbf{\hat{A}}) & = 0
+\end{align}
+因此性质约束为：
+\begin{equation}
+g_p(\mathbf{\hat{A}}) = \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2 -\lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 \right. \left. -\lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2 \right)
+\end{equation}
+\subsection{优化}
+作者提出的优化目标便可以写为：
+\begin{equation}
+\begin{aligned}
+\max_{\mathbf{\hat{A}}} & \exp\left(-\lambda_0 \vec{x}^\top(\mathbf{I}_n - \mathbf{\hat{A}}) \vec{x} \right) \cdot \exp\left( -\lambda_1 \| \mathbf{\hat{A}} \|_1 \right) \cdot \\ &  \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2 -\lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 -\lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2 \right) 
+\end{aligned}
+\end{equation}
+等价于：
+\begin{equation}
+\begin{aligned}
+\min_{\mathbf{\hat{A}}} & \lambda_0 \vec{x}^\top(\mathbf{I}_n - \mathbf{\hat{A}}) \vec{x} + \lambda_1 \| \mathbf{\hat{A}} \|_1 + \\ & \lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2  + \lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 + \lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2
+\end{aligned}
+\end{equation}
+
+最终的loss也由三部分组成:
+\begin{equation}
+\mathcal{L}_\text{GL} = \mathcal{L}_\text{smooth} + \mathcal{L}_\text{sparsity} + \mathcal{L}_\text{properties}
+\end{equation}
+
+其中：
+\begin{align}
+ \mathcal{L}_\text{smooth}  & =  \lambda_0 \| \mathbf{x}^\top (\mathbf{I}_n - \mathbf{\hat{A}}_\text{out}) \mathbf{x} \|_2^2 \\
+\mathcal{L}_\text{sparsity} & =   \lambda_1 \| \mathbf{\hat{A}}_\text{out} \|_1 \\
+% \begin{multlined}
+\mathcal{L}_\text{properties} & =   \lambda_2 \| \mathbf{A}_\text{out}^\top - \mathbf{A}_\text{out} \|_2^2 +   \lambda_3 \| \mathbf{\hat{A}}_\text{out} \mathbf{1} - \mathbf{1} \|_2^2 + \lambda_4 | \text{tr}(\mathbf{\hat{A}}_\text{out}) |^2
+% \end{multlined}
+\end{align}
+值得注意的是，为了使得输出的邻接矩阵尽可能地稀疏，作者将 $\mathcal{L}_\text{sparsity}$ 的梯度下降规则设置为：
+\begin{equation}
+\frac{\partial \mathcal{L}_\text{sparsity}}{\partial \mathbf{\hat{A}}_\text{out}} = \text{sgn}(\mathbf{\hat{A}}_\text{out})
+\end{equation}
+
+而最终的邻接矩阵会被设置为：
+\begin{equation}
+\mathbf{\hat{A}}_\text{out} = \frac{1}{2} \left(\mathbf{\hat{A}}^\top + \mathbf{\hat{A}} \right)
+\end{equation}
+
+\section{DropEdge}
+图卷积神经网络通常非常容易过拟合，为了解决这一问题，训练真正深的图卷积神经网络，\cite{Rong2019TheTD}提出了一种称为DropEdge的方法。
+\begin{equation}
+\mathbf{A}_{drop} = \mathbf{A}-\mathbf{A}'
+\end{equation}
+其中 $\mathbf{A}'$ 是由原邻接矩阵直接随机保留固定数量的边得到的。
+这一操作算是算是图上的Dropout。
+关于原来的GCN为啥不能变深，论文也说的很清楚：
+如若一个GCN有无穷个层，按如下公式更新：
+\begin{equation}
+\mathbf{H}^{(l+1)} = \hat{\mathbf{A}}\mathbf{H}^{(l)}
+\end{equation}
+那么：
+\begin{equation}
+\lim_{l \rightarrow \infty} \mathbf{H}^{(l)} = \lim_{l \rightarrow \infty} \hat{\mathbf{A}}^l\mathbf{X}=\pi
+\end{equation}
+其中 $\pi_{i,j}=\frac{d_j}{2|\mathcal{E}|}$ 与输入 $\mathbf{X}$ 无关。
+然后作者认为再使用了DropGCN计算得到的 $\mathbf{H}'$ 后：
+\begin{equation}
+ |\mathbf{H}'^{(l)} - \pi'| \ge |\mathbf{H}^{(l)} - \pi|
+\end{equation}
+就不会那么与输入无关了。
+
+\section{EGNN}
+对图上的节点做图卷积可以有效地做特征嵌入(Embedding)，然而对图上的边做特征变换则更有助于分类或聚类，EGNN(Edge-Labeling Graph Neural Network \cite{kim2019edgelabeling}) 提出了一种对边进行变换的方法。
+
+对于一个图，EGNN的边 ${\bf e}_{ij} = \{e_{ijd}\}_{d=1}^{2} \in [0, 1]^2$ 是这样构建的
+\begin{equation}
+{\bf e}_{ij}^0 = \left\{\begin{array}{cc} {[1||0]},& \mbox{if} ~ v_i \sim v_j, \\ {[0||1]},&  \mbox{if} ~ v_i \neq v_j, \\ {[0.5||0.5]},& \mbox{otherwise}, \end{array} \right.
+\end{equation}
+其中 $v_i \sim v_j$ 代表两者均已标注并且两者均属于同一类，而 $v_i \neq v_j$ 则代表两者均已标注且不属于同一类。
+节点按以下规则更新：
+\begin{equation}
+{\bf v}_{i}^{\ell} = f_v^{\ell}([\sum_{j} {\tilde e}_{ij1}^{\ell-1}{\bf v}_j^{\ell-1}||\sum_{j} {\tilde e}_{ij2}^{\ell-1}{\bf v}_j^{\ell-1}];\theta_v^{\ell})
+\end{equation}
+其中 
+
+\begin{equation}
+    {\tilde e}_{ijd} = \frac{e_{ijd}}{\sum_{k}e_{ikd}}
+\end{equation}
+，而 $f_v^{\ell}$ 是特征转换网络（feature transformation network）。
+边则按照以下规则更新：
+
+\begin{align}
+{\bar e}_{ij1}^{\ell} & = \frac{f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{j}^{\ell}; \theta_e^{\ell})e_{ij1}^{\ell-1}}{\sum_{k}f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{k}^{\ell}; \theta_e^{\ell})e_{ik1}^{\ell-1}/(\sum_{k}e_{ik1}^{\ell-1})}, \\ 
+{\bar e}_{ij2}^{\ell} & =\frac{(1-f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{j}^{\ell}; \theta_e^{\ell}))e_{ij2}^{\ell-1}}{\sum_{k}(1-f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{k}^{\ell}; \theta_e^{\ell}))e_{ik2}^{\ell-1}/(\sum_{k}e_{ik2}^{\ell-1})},
+\\
+{\bf e}_{ij}^{\ell} & = \frac{{\bar {\bf e}}_{ij}^{\ell}} {\|{\bar {\bf e}}_{ij}^{\ell}\|_1}
+\end{align}
+
+
+\section{SGC}
+图上的卷积变换是GCN的核心，虽然这一操作并不是非常地复杂，但是不得不承认该操作是非常耗时的。 Simple Graph Convolution (SGC)\cite{wu2019simplifying}的作者认为
+
+\part{应用}
+\chapter{人脸聚类}
+
+\bibliographystyle{plain}
+\bibliography{cite}
+
+\end{document}
