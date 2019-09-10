@@ -21,7 +21,7 @@
 \date{}
 \version{}
 \extrainfo{在谈到如果要给后进的学弟学妹一个学习的方法的话，刘路回答到：“我只有一个想法，就是看淡分数，重在兴趣。”}
-\logo{}
+\logo{logomws.png}
 \cover{m.jpg}
 
 \begin{document}
@@ -31,9 +31,9 @@
 \chapter*{序}
 图是重要的。
 \begin{flushright}
-笔者
+    笔者
 
-于康乐园
+    于康乐园
 \end{flushright}
 
 \tableofcontents
@@ -47,9 +47,9 @@
 这样的表示当然是方便理解的，但是当我们要用计算机处理和分析图时，这样的表示就过于抽象了，我们要注意到，在我们对包含$n$个元素的集合$\mathcal{V}$中的元素赋予$1$到$n$的编号的时候($\mathcal{V} = \{a_1, \cdots, a_n\}$)，图是可以由一个邻接矩阵$A \in \{0,1\}^{n\times n}$表示的：
 \begin{equation}
     A_{i,j} = \left\{\begin{matrix}
-1, & \text{if } a_i \sim a_j \\ 
-0, & \text{otherwise}
-\end{matrix}\right.
+        1, & \text{if } a_i \sim a_j \\
+        0, & \text{otherwise}
+    \end{matrix}\right.
 \end{equation}
 ，其中$a_i \sim a_j$代表$(a_i,a_j) \in \mathcal{E} $， 即图中存在点$a_i$与$a_j$的连接。
 
@@ -82,10 +82,10 @@
 
 一个经典的图的例子是图 \ref{fig:graph}中所示的状态转移图，每一个节点代表一种状态，而节点间的边（有向）$e_{ij}$表示从状态$a_i$到状态$a_j$的转移概率，其邻接矩阵可以表示为：
 \begin{equation*}
-    A = 
-    \begin{bmatrix} 
-        1/4 & 1/2 & 1/4\\
-        1/2 & 0 & 1/2\\
+    A =
+    \begin{bmatrix}
+        1/4 & 1/2 & 1/4 \\
+        1/2 & 0   & 1/2 \\
         1/2 & 1/2 & 0
     \end{bmatrix}
 \end{equation*}
@@ -105,7 +105,7 @@
 
 \begin{definition}{梯度(图)}{graph_gradient}
     \begin{equation}
-\triangledown_i f := \left[\left\{\frac{\partial f }{\partial e_{ij} } \right\}_{e_{ij} \in \mathcal{E}}\right]
+        \triangledown_i f := \left[\left\{\frac{\partial f }{\partial e_{ij} } \right\}_{e_{ij} \in \mathcal{E}}\right]
     \end{equation}
 \end{definition}
 
@@ -113,8 +113,8 @@
 \begin{definition}{局部变分(图)}{local_variation}
     \begin{equation}
         \begin{aligned}
-            \| \triangledown_i f \|_2 &:=\left[\sum_{e_{ij} \in \mathcal{E}} \left(\frac{\partial f }{\partial e_{ij} }\right)^2\right]^{\frac{1}{2}} \\
-            &~=\left[\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2\right]^{\frac{1}{2}}
+            \| \triangledown_i f \|_2 & :=\left[\sum_{e_{ij} \in \mathcal{E}} \left(\frac{\partial f }{\partial e_{ij} }\right)^2\right]^{\frac{1}{2}} \\
+                                      & ~=\left[\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2\right]^{\frac{1}{2}}
         \end{aligned}
     \end{equation}
 \end{definition}
@@ -123,8 +123,8 @@
 \begin{definition}{离散$p$-迪利克雷形式}{dirichlet}
     \begin{equation}
         \begin{aligned}
-            S_p(f) & :=\frac{1}{p}\sum_{i \in \mathcal{V}}\| \triangledown_i f \|_2^p \\
-            & =\frac{1}{p}\sum_{i \in \mathcal{V}}\left[\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2\right]^{\frac{p}{2}}
+            S_p(f) & :=\frac{1}{p}\sum_{i \in \mathcal{V}}\| \triangledown_i f \|_2^p                                                         \\
+                   & =\frac{1}{p}\sum_{i \in \mathcal{V}}\left[\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2\right]^{\frac{p}{2}}
         \end{aligned}
     \end{equation}
 \end{definition}
@@ -133,8 +133,8 @@
 \begin{equation}
     \begin{aligned}
         S_2(f) & = \frac{1}{2}\sum_{i \in \mathcal{V}}\sum_{j \in \mathcal{N}_i}A_{i,j}\left[f(j)-f(i)\right]^2 \\
-        & = \sum_{e_{ij} \in \mathcal{E}}A_{i,j}\left[f(j)-f(i)\right]^2 \\
-        & =f^T\mathcal{L} f
+               & = \sum_{e_{ij} \in \mathcal{E}}A_{i,j}\left[f(j)-f(i)\right]^2                                 \\
+               & =f^T\mathcal{L} f
     \end{aligned}
 \end{equation}
 
@@ -144,16 +144,16 @@
 我们有了图之后，我们更愿意去了解如何分析一个图，我们会很自然地想到用经典的线性代数上的运算去处理这种能够用矩阵表示的问题。矩阵问题的一个经典的研究方式就是研究该矩阵的特征值与特征代数，如矩阵的谱一般，图的谱被定义为:
 \begin{definition}{谱（图）}{spectrum}
     图的邻接矩阵的特征值及其重数：
-\begin{equation*}
-    \begin{pmatrix} 
-        \lambda_1 & \cdots & \lambda_k\\
-        r_1 & \cdots & r_k\\
-    \end{pmatrix}
-\end{equation*}
-对于无向图来说，其邻接矩阵是实对称阵，因而有：
-\begin{equation}
-    \sum_{i=1}^k r_i = n
-\end{equation}
+    \begin{equation*}
+        \begin{pmatrix}
+            \lambda_1 & \cdots & \lambda_k \\
+            r_1       & \cdots & r_k       \\
+        \end{pmatrix}
+    \end{equation*}
+    对于无向图来说，其邻接矩阵是实对称阵，因而有：
+    \begin{equation}
+        \sum_{i=1}^k r_i = n
+    \end{equation}
 \end{definition}
 
 \chapter{图的构建}
@@ -176,9 +176,9 @@
 
 \begin{equation}
     A_{i,j} = \left\{\begin{matrix}
-1, & \text{if } s_{i,j} > \theta \\ 
-0, & \text{otherwise}
-\end{matrix}\right.
+        1, & \text{if } s_{i,j} > \theta \\
+        0, & \text{otherwise}
+    \end{matrix}\right.
 \end{equation}
 
 而在连续的图上，则常使用$L_2$相似度;
@@ -195,9 +195,9 @@
 
 \begin{equation}
     A_{i,j} = \left\{\begin{matrix}
- s_{i,j}, & \text{if } \|x_i - x_j \|^2 < \theta \\ 
-0, & \text{otherwise}
-\end{matrix}\right.
+        s_{i,j}, & \text{if } \|x_i - x_j \|^2 < \theta \\
+        0,       & \text{otherwise}
+    \end{matrix}\right.
 \end{equation}
 
 受限于计算资源，当数据特别多的时候，我们虽然能够用稀疏矩阵去存储这些数据所构成的图的邻接矩阵，但是直接去计算或处理这一图还是相当困难的，这个时候就需要对图进行分割。
@@ -229,32 +229,32 @@
 \cite{kipf2016semi}中提出的GCN模型核心在于将图上的卷积近似为：
 
 \begin{equation}
-g_\theta \star x \approx \theta_0'x + \theta_1 (L-I_n)x =  \theta_0'x + \theta_1 D^{-\frac{1}{2}} A D^{-\frac{1}{2}} x
+    g_\theta \star x \approx \theta_0'x + \theta_1 (L-I_n)x =  \theta_0'x + \theta_1 D^{-\frac{1}{2}} A D^{-\frac{1}{2}} x
 \end{equation}
 
 并假设
 
 \begin{equation}
-\theta = \theta_0' = -\theta_1' 
-\label{eqn:theta}
+    \theta = \theta_0' = -\theta_1'
+    \label{eqn:theta}
 \end{equation}
 
 得到
 
 \begin{equation}
-g_\theta \star x \approx \theta\left (I_n - D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \right) x
+    g_\theta \star x \approx \theta\left (I_n - D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \right) x
 \end{equation}
 
 并且在实际计算时使用如下的归一化技巧：
 
 \begin{equation}
-I_n - D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \rightarrow \tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}}  
+    I_n - D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \rightarrow \tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}}
 \end{equation}
 
 其中：
 
 \begin{equation}
-\tilde{A} = I_n + A
+    \tilde{A} = I_n + A
 \end{equation}
 
 令：
@@ -265,13 +265,13 @@ I_n - D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \rightarrow \tilde{D}^{-\frac{1}{2}} \
 在图中的数据输入下一层全连接层之前，我们可以先对其做图上的卷积变换，这样以来每一层的计算公式便为：
 
 \begin{equation}
-{H}^{(k+1)} = f(H^{(k)}, A) = \sigma\left(\hat{A} H^{(k)}W^{(k)}\right)
+    {H}^{(k+1)} = f(H^{(k)}, A) = \sigma\left(\hat{A} H^{(k)}W^{(k)}\right)
 \end{equation}
 
 但是值得注意的一点是，不同的工作对于$\hat{A}$的选取是不同的，因为作者可以选择是否归一化，甚至可以在式\ref{eqn:theta}中假设不同的$\theta$的取值，例如假设$\theta_0' = \theta_1' $，从而得到：
 
 \begin{equation}
-\hat{A}' = {I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}
+    \hat{A}' = {I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}
 \end{equation}
 
 \section{ANGPN}
@@ -279,25 +279,25 @@ ANGPN（Adaptive Neighborhood Graph Propagation Network） \cite{Jiang2019Semisu
 GCN计算公式为：
 
 \begin{equation}
-{H}^{(k+1)} = \sigma\big(({I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}){H}^{(k)}{W}^{(k)}\big)
+    {H}^{(k+1)} = \sigma\big(({I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}){H}^{(k)}{W}^{(k)}\big)
 \end{equation}
 
 可以将计算流程分解为：
 
 \begin{equation}
-{F}^{(k)} = ({I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}){H}^{(k)} \\ {H}^{(k+1)} = \sigma\big( {F}^{(k)}  {W}^{(k)}\big)
+    {F}^{(k)} = ({I_n}+{D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}){H}^{(k)} \\ {H}^{(k+1)} = \sigma\big( {F}^{(k)}  {W}^{(k)}\big)
 \end{equation}
 
 令 $\hat{{A}} = {D}^{-\frac{1}{2}}{A}{D}^{-\frac{1}{2}}$ ，可以将第一步的计算操作展开为
 
 \begin{equation}
-{f}_i = \sum\nolimits^n_{j=1}\hat{{A}}_{ij}{h}_j  +{h}_i
+    {f}_i = \sum\nolimits^n_{j=1}\hat{{A}}_{ij}{h}_j  +{h}_i
 \end{equation}
 
 这里我们会发现，这里我们难以控制是自身的feature重要还是邻居的feature重要，于是作者：
 
 \begin{equation}
-{f}_i^{(t+1)} = \alpha \sum^n\nolimits_{j=1}{A}_{ij} {f}_j^{(t)} + (1-\alpha){h}_i
+    {f}_i^{(t+1)} = \alpha \sum^n\nolimits_{j=1}{A}_{ij} {f}_j^{(t)} + (1-\alpha){h}_i
 \end{equation}
 
 其中 $f^{(0)}_j = h_j$
@@ -305,23 +305,23 @@ GCN计算公式为：
 矩阵形式可以写为;
 
 \begin{equation}
-{F}^{(t+1)} = \alpha {A} {F}^{(t)} + (1-\alpha){H}
+    {F}^{(t+1)} = \alpha {A} {F}^{(t)} + (1-\alpha){H}
 \end{equation}
 
 迭代无穷次后，可得到稳定值为：
 
 \begin{equation}
-{F}^{*} = (1-\alpha) (I_n - \alpha A)^{-1}{H}
+    {F}^{*} = (1-\alpha) (I_n - \alpha A)^{-1}{H}
 \end{equation}
 
 要使得 $F$ 收敛，就是等价于解决如下优化问题：
 
 \begin{equation}
-\min_{F} \,\, \mathrm{Tr} (F^{T}(I_n - A) F) + \mu \|F - H\|^2_F
+    \min_{F} \,\, \mathrm{Tr} (F^{T}(I_n - A) F) + \mu \|F - H\|^2_F
 \end{equation}
-其中 $\alpha = \frac{1}{1+\mu}$ , 
+其中 $\alpha = \frac{1}{1+\mu}$ ,
 \begin{equation}
-\|A\|_F=\sqrt{\sum_{i=1}^m\sum_{j=1}^n |a_{ij}|^2}=\sqrt{\operatorname{trace}(A^* A)}=\sqrt{\sum_{i=1}^{\min\{m,\,n\}} \sigma_{i}^2}
+    \|A\|_F=\sqrt{\sum_{i=1}^m\sum_{j=1}^n |a_{ij}|^2}=\sqrt{\operatorname{trace}(A^* A)}=\sqrt{\sum_{i=1}^{\min\{m,\,n\}} \sigma_{i}^2}
 \end{equation}
 ，
 这里 $A^*$ 表示 $A$ 的共轭转置， $\sigma_{i}$ 是 $A$ 的奇异值
@@ -330,174 +330,174 @@ GCN计算公式为：
 令 $D^x_{ij}=\|x_i-x_j\|_2$ ，再引入代表数据 $i$ 和 $j$ 之间的相似程度的参数 $S_{ij}$ ， 可以将上述优化拓展为：
 
 \begin{equation}
-\begin{aligned}
-min_{S,F} & \,\,   \sum^n\nolimits_{i,j=1}D^x_{ij}S_{ij}+\gamma \|S\|^2_F+ \\ &  \beta \mathrm{Tr} (F^{T}(I_n - S) F) + \mu \|F - H\|^2_F  \\ &  s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0 
-\end{aligned}
+    \begin{aligned}
+        min_{S,F} & \,\,   \sum^n\nolimits_{i,j=1}D^x_{ij}S_{ij}+\gamma \|S\|^2_F+ \\ &  \beta \mathrm{Tr} (F^{T}(I_n - S) F) + \mu \|F - H\|^2_F  \\ &  s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0
+    \end{aligned}
 \end{equation}
 
 要解决这一优化问题，可以迭代地求出一个近似解：
 第一步，先对于给定的 $F$ ，求出最优的 $S$
 
 \begin{equation}
-\begin{aligned}
-\min_{S} & \, \sum^n\nolimits_{i,j=1}D^x_{ij}S_{ij}+\gamma \|S\|^2_F+ \beta \mathrm{Tr} (F^{T}(I_n - S) F)  
-\\ & s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0
-\end{aligned}
+    \begin{aligned}
+        \min_{S} & \, \sum^n\nolimits_{i,j=1}D^x_{ij}S_{ij}+\gamma \|S\|^2_F+ \beta \mathrm{Tr} (F^{T}(I_n - S) F)
+        \\ & s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0
+    \end{aligned}
 \end{equation}
 等价于
 
 \begin{equation}
-\begin{aligned}
-\min_{S} & \, \sum^n\nolimits_{i,j=1}(D^x-\beta FF^T)_{ij}S_{ij}+\gamma \|S\|^2_F
-\\ & s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0
-\end{aligned}
+    \begin{aligned}
+        \min_{S} & \, \sum^n\nolimits_{i,j=1}(D^x-\beta FF^T)_{ij}S_{ij}+\gamma \|S\|^2_F
+        \\ & s.t. \ \ \sum^n\nolimits_{j=1}S_{ij}=1, S_{ij}\geq 0
+    \end{aligned}
 \end{equation}
 
 这一问题有一个闭合（解析）解：
 
 \begin{equation}
-S_{ij} = \max\big\{-\frac{1}{2\gamma}(D^x - \beta FF^T)_{ij} + \eta, 0\big\}% \big]_{+}
+    S_{ij} = \max\big\{-\frac{1}{2\gamma}(D^x - \beta FF^T)_{ij} + \eta, 0\big\}% \big]_{+}
 \end{equation}
 其中 $\eta = \frac{1}{k} +\frac{1}{2k\gamma}\sum^k\nolimits_{j=1} D^x_{ij}$
 
 其后再根据公式更新 $F$
 
 \begin{algorithm}[h]
-\caption{ANGPN Propagation Layer}
-\begin{algorithmic}[1]
-\STATE \textbf{输入:} 特征矩阵 ${H}^{(k)}\in \mathbb{R}^{n\times d_k}$ , 距离矩阵 $D\in \mathbb{R}^{n\times n}$ , 权重 $W^{(k)}$, 参数 $\gamma, \beta$ 和 $\alpha$,  最大迭代次数 $T$
-\STATE \textbf{输出:} 特征矩阵 $H^{(k+1)}$
-\STATE 令 $F = H^{(k)}$
-\STATE 计算 $\eta$ %Initialize $F = H^{(k)}$
-$
-\textstyle \eta = \frac{1}{k} +\frac{1}{2k\gamma}\sum^k\nolimits_{j=1} D^x_{ij}
-$
-\FOR {$t=1,2\cdots T$}
-\STATE 计算 $S$\\
-$
-\ \ \ \ \ \ \ \ \ \ S_{ij} = \max\big\{-\frac{1}{2\gamma}(D^x - \beta FF^T)_{ij} + \eta, 0\big\}
-$
-\STATE 计算 $F$\\
-%\begin{center}
-$
-\ \ \ \ \ \ \ \ \ \ F = (\alpha S + (1-\alpha) I_n)H^{(k)}%  + (1-\alpha) H^{(k)} %(I_n - \alpha S)^{-1} H
-$
-%\end{center}
-\ENDFOR \label{code:recentEnd}
-\STATE 返回
-$
-H^{(k+1)} =\sigma\big( {F}  {W}^{(k)}\big)
-$
-% {H}^{(k+1)} = \sigma\big( {F}^{(k)}  {W}^{(k)}\big)
-%\STATE{Compute the final binary solution $\bar{\Xb}^*$ from $\Xb^*$ using a post-discretization step.}
-\emph{}
-\end{algorithmic}
+    \caption{ANGPN Propagation Layer}
+    \begin{algorithmic}[1]
+        \STATE \textbf{输入:} 特征矩阵 ${H}^{(k)}\in \mathbb{R}^{n\times d_k}$ , 距离矩阵 $D\in \mathbb{R}^{n\times n}$ , 权重 $W^{(k)}$, 参数 $\gamma, \beta$ 和 $\alpha$,  最大迭代次数 $T$
+        \STATE \textbf{输出:} 特征矩阵 $H^{(k+1)}$
+        \STATE 令 $F = H^{(k)}$
+        \STATE 计算 $\eta$ %Initialize $F = H^{(k)}$
+        $
+            \textstyle \eta = \frac{1}{k} +\frac{1}{2k\gamma}\sum^k\nolimits_{j=1} D^x_{ij}
+        $
+        \FOR {$t=1,2\cdots T$}
+        \STATE 计算 $S$\\
+        $
+            \ \ \ \ \ \ \ \ \ \ S_{ij} = \max\big\{-\frac{1}{2\gamma}(D^x - \beta FF^T)_{ij} + \eta, 0\big\}
+        $
+        \STATE 计算 $F$\\
+        %\begin{center}
+        $
+            \ \ \ \ \ \ \ \ \ \ F = (\alpha S + (1-\alpha) I_n)H^{(k)}%  + (1-\alpha) H^{(k)} %(I_n - \alpha S)^{-1} H
+        $
+        %\end{center}
+        \ENDFOR \label{code:recentEnd}
+        \STATE 返回
+        $
+            H^{(k+1)} =\sigma\big( {F}  {W}^{(k)}\big)
+        $
+        % {H}^{(k+1)} = \sigma\big( {F}^{(k)}  {W}^{(k)}\big)
+        %\STATE{Compute the final binary solution $\bar{\Xb}^*$ from $\Xb^*$ using a post-discretization step.}
+        \emph{}
+    \end{algorithmic}
 \end{algorithm}
 
 \section{Maximum a Posteriori}
 计算图上的邻接矩阵，特别是复杂的数据之间的邻接矩阵是一个值得深入探究的问题。有别于\cite{Jiang2019SemisupervisedLW}，\cite{gao2019exploring}提出了一种不依赖欧式距离的邻接矩阵优化方法：
 \begin{equation}
-\vec{\tilde{A}}_\text{MAP}(\mathbf{x}) = \arg \max_{\mathbf{\hat{A}}} \ f(\vec{x} \mid \mathbf{\hat{A}})g(\mathbf{\hat{A}})
+    \vec{\tilde{A}}_\text{MAP}(\mathbf{x}) = \arg \max_{\mathbf{\hat{A}}} \ f(\vec{x} \mid \mathbf{\hat{A}})g(\mathbf{\hat{A}})
 \end{equation}
-其中 $ f(\vec{x} \mid \mathbf{\hat{A}})$ 是相似度函数，而 $g(\mathbf{\hat{A}})$ 是 $\mathbf{\hat{A}}$ 的先验概率分布. 
+其中 $ f(\vec{x} \mid \mathbf{\hat{A}})$ 是相似度函数，而 $g(\mathbf{\hat{A}})$ 是 $\mathbf{\hat{A}}$ 的先验概率分布.
 \subsection{相似度函数}
 首先作者假设图 $\mathcal{G}=\{\mathcal{V},\mathcal{E}\}$ 上的数据 $\vec{x} = (x_1, x_2, ..., x_n)^\top \in \mathbb{R}^n$  都是GMRF上的，即满足以下概率密度函数：
 \begin{equation}
-\pi(\vec{x}) = (2\pi)^{-\frac{n}{2}}|\mathbf{Q}|^{\frac{1}{2}} \text{exp}\left(-\frac{1}{2}(\vec{x}-\vec{\mu})^\top\mathbf{Q}(\vec{x}-\vec{\mu})\right)
+    \pi(\vec{x}) = (2\pi)^{-\frac{n}{2}}|\mathbf{Q}|^{\frac{1}{2}} \text{exp}\left(-\frac{1}{2}(\vec{x}-\vec{\mu})^\top\mathbf{Q}(\vec{x}-\vec{\mu})\right)
 \end{equation}
-，并且 $Q_{i,j} \neq 0 \quad \Longleftrightarrow \quad \{i,j\} \in \mathcal{E}, \forall i \neq j$ 
+，并且 $Q_{i,j} \neq 0 \quad \Longleftrightarrow \quad \{i,j\} \in \mathcal{E}, \forall i \neq j$
 其中 $\mu$ 是均值， $\mathbf{Q} > 0$ 是精度矩阵(precision matrix)
 由于邻接矩阵代表了图上数据的关联性，与精度矩阵有关，作者假设：
 \begin{equation}
-\mathbf{Q} = \delta \mathcal{L} = \delta (\mathbf{I}_n - \mathbf{\hat{A}})
+    \mathbf{Q} = \delta \mathcal{L} = \delta (\mathbf{I}_n - \mathbf{\hat{A}})
 \end{equation}
 因而相似度函数可以表示为：
 \begin{equation}
- f(\vec{x} \mid \mathbf{\hat{A}}) =\beta \text{exp} \left(-\lambda_0 \vec{x}^\top ( \mathbf{I}_n - \mathbf{\hat{A}} ) \vec{x} \right)
+    f(\vec{x} \mid \mathbf{\hat{A}}) =\beta \text{exp} \left(-\lambda_0 \vec{x}^\top ( \mathbf{I}_n - \mathbf{\hat{A}} ) \vec{x} \right)
 \end{equation}
 其中 $\beta=(2\pi)^{-\frac{n}{2}}|\mathbf{Q}|^{\frac{1}{2}}$ 并且 $\lambda_0 = \frac{\delta}{2}$
 值得我们注意的是：
 \begin{equation}
-\vec{x}^\top \mathcal{L} \vec{x} = \sum\limits_{i \sim j}a_{i,j}(x_i - x_j)^2
+    \vec{x}^\top \mathcal{L} \vec{x} = \sum\limits_{i \sim j}a_{i,j}(x_i - x_j)^2
 \end{equation}
 其中 $a_{i,j}$ 代表 $x_i$ 和 $x_j$ 间边的权重， 而 $i \sim j$ 表示点 $i$ 和点 $j$相连
 \subsection{先验概率分布}
 作者认为先验概率分布由稀疏性约束(sparsity constraint) $ g_s(\mathbf{\hat{A}})$ 和性质约束(property constraint) $g_p(\mathbf{\hat{A}})$ 两部分组成：
 \begin{equation}
-g(\mathbf{\hat{A}}) = g_s(\mathbf{\hat{A}})g_p(\mathbf{\hat{A}})
+    g(\mathbf{\hat{A}}) = g_s(\mathbf{\hat{A}})g_p(\mathbf{\hat{A}})
 \end{equation}
 其中稀疏性约束是要求 $\mathbf{\hat{A}}$ 变得更加稀疏：
 \begin{equation}
-g_s(\mathbf{\hat{A}}) = \exp \left( -\lambda_1 \| \mathbf{\hat{A}} \|_1 \right)
+    g_s(\mathbf{\hat{A}}) = \exp \left( -\lambda_1 \| \mathbf{\hat{A}} \|_1 \right)
 \end{equation}
 其中 $\| \cdot \|_1$ 是矩阵的 $l_1$-norm ， 而 $\lambda_1$ 是一个权重参数
 而作为图的邻接矩阵， $\mathbf{\hat{A}}$ 具有如下性质：
 \begin{align}
-\mathbf{\hat{A}}^\top  & = \mathbf{\hat{A}}\\
-\mathbf{\hat{A}}\mathbf{1}  & = \mathbf{1}\\
-\text{tr}(\mathbf{\hat{A}}) & = 0
+    \mathbf{\hat{A}}^\top       & = \mathbf{\hat{A}} \\
+    \mathbf{\hat{A}}\mathbf{1}  & = \mathbf{1}       \\
+    \text{tr}(\mathbf{\hat{A}}) & = 0
 \end{align}
 因此性质约束为：
 \begin{equation}
-g_p(\mathbf{\hat{A}}) = \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2 -\lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 \right. \left. -\lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2 \right)
+    g_p(\mathbf{\hat{A}}) = \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2 -\lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 \right. \left. -\lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2 \right)
 \end{equation}
 \subsection{优化}
 作者提出的优化目标便可以写为：
 \begin{equation}
-\begin{aligned}
-\max_{\mathbf{\hat{A}}} & \exp\left(-\lambda_0 \vec{x}^\top(\mathbf{I}_n - \mathbf{\hat{A}}) \vec{x} \right) \cdot \exp\left( -\lambda_1 \| \mathbf{\hat{A}} \|_1 \right) \cdot \\ &  \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2 -\lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 -\lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2 \right) 
-\end{aligned}
+    \begin{aligned}
+        \max_{\mathbf{\hat{A}}} & \exp\left(-\lambda_0 \vec{x}^\top(\mathbf{I}_n - \mathbf{\hat{A}}) \vec{x} \right) \cdot \exp\left( -\lambda_1 \| \mathbf{\hat{A}} \|_1 \right) \cdot \\ &  \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2 -\lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 -\lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2 \right)
+    \end{aligned}
 \end{equation}
 等价于：
 \begin{equation}
-\begin{aligned}
-\min_{\mathbf{\hat{A}}} & \lambda_0 \vec{x}^\top(\mathbf{I}_n - \mathbf{\hat{A}}) \vec{x} + \lambda_1 \| \mathbf{\hat{A}} \|_1 + \\ & \lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2  + \lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 + \lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2
-\end{aligned}
+    \begin{aligned}
+        \min_{\mathbf{\hat{A}}} & \lambda_0 \vec{x}^\top(\mathbf{I}_n - \mathbf{\hat{A}}) \vec{x} + \lambda_1 \| \mathbf{\hat{A}} \|_1 + \\ & \lambda_2 \| \mathbf{\hat{A}}^\top - \mathbf{\hat{A}} \|_F^2  + \lambda_3 \| \mathbf{\hat{A}}\mathbf{1} - \mathbf{1} \|_F^2 + \lambda_4 | \text{tr}(\mathbf{\hat{A}}) |^2
+    \end{aligned}
 \end{equation}
 
 最终的loss也由三部分组成:
 \begin{equation}
-\mathcal{L}_\text{GL} = \mathcal{L}_\text{smooth} + \mathcal{L}_\text{sparsity} + \mathcal{L}_\text{properties}
+    \mathcal{L}_\text{GL} = \mathcal{L}_\text{smooth} + \mathcal{L}_\text{sparsity} + \mathcal{L}_\text{properties}
 \end{equation}
 
 其中：
 \begin{align}
- \mathcal{L}_\text{smooth}  & =  \lambda_0 \| \mathbf{x}^\top (\mathbf{I}_n - \mathbf{\hat{A}}_\text{out}) \mathbf{x} \|_2^2 \\
-\mathcal{L}_\text{sparsity} & =   \lambda_1 \| \mathbf{\hat{A}}_\text{out} \|_1 \\
-% \begin{multlined}
-\mathcal{L}_\text{properties} & =   \lambda_2 \| \mathbf{A}_\text{out}^\top - \mathbf{A}_\text{out} \|_2^2 +   \lambda_3 \| \mathbf{\hat{A}}_\text{out} \mathbf{1} - \mathbf{1} \|_2^2 + \lambda_4 | \text{tr}(\mathbf{\hat{A}}_\text{out}) |^2
-% \end{multlined}
+    \mathcal{L}_\text{smooth}     & =  \lambda_0 \| \mathbf{x}^\top (\mathbf{I}_n - \mathbf{\hat{A}}_\text{out}) \mathbf{x} \|_2^2                                                                                                                  \\
+    \mathcal{L}_\text{sparsity}   & =   \lambda_1 \| \mathbf{\hat{A}}_\text{out} \|_1                                                                                                                                                               \\
+    % \begin{multlined}
+    \mathcal{L}_\text{properties} & =   \lambda_2 \| \mathbf{A}_\text{out}^\top - \mathbf{A}_\text{out} \|_2^2 +   \lambda_3 \| \mathbf{\hat{A}}_\text{out} \mathbf{1} - \mathbf{1} \|_2^2 + \lambda_4 | \text{tr}(\mathbf{\hat{A}}_\text{out}) |^2
+    % \end{multlined}
 \end{align}
 值得注意的是，为了使得输出的邻接矩阵尽可能地稀疏，作者将 $\mathcal{L}_\text{sparsity}$ 的梯度下降规则设置为：
 \begin{equation}
-\frac{\partial \mathcal{L}_\text{sparsity}}{\partial \mathbf{\hat{A}}_\text{out}} = \text{sgn}(\mathbf{\hat{A}}_\text{out})
+    \frac{\partial \mathcal{L}_\text{sparsity}}{\partial \mathbf{\hat{A}}_\text{out}} = \text{sgn}(\mathbf{\hat{A}}_\text{out})
 \end{equation}
 
 而最终的邻接矩阵会被设置为：
 \begin{equation}
-\mathbf{\hat{A}}_\text{out} = \frac{1}{2} \left(\mathbf{\hat{A}}^\top + \mathbf{\hat{A}} \right)
+    \mathbf{\hat{A}}_\text{out} = \frac{1}{2} \left(\mathbf{\hat{A}}^\top + \mathbf{\hat{A}} \right)
 \end{equation}
 
 \section{DropEdge}
 图卷积神经网络通常非常容易过拟合，为了解决这一问题，训练真正深的图卷积神经网络，\cite{Rong2019TheTD}提出了一种称为DropEdge的方法。
 \begin{equation}
-\mathbf{A}_{drop} = \mathbf{A}-\mathbf{A}'
+    \mathbf{A}_{drop} = \mathbf{A}-\mathbf{A}'
 \end{equation}
 其中 $\mathbf{A}'$ 是由原邻接矩阵直接随机保留固定数量的边得到的。
 这一操作算是算是图上的Dropout。
 关于原来的GCN为啥不能变深，论文也说的很清楚：
 如若一个GCN有无穷个层，按如下公式更新：
 \begin{equation}
-\mathbf{H}^{(l+1)} = \hat{\mathbf{A}}\mathbf{H}^{(l)}
+    \mathbf{H}^{(l+1)} = \hat{\mathbf{A}}\mathbf{H}^{(l)}
 \end{equation}
 那么：
 \begin{equation}
-\lim_{l \rightarrow \infty} \mathbf{H}^{(l)} = \lim_{l \rightarrow \infty} \hat{\mathbf{A}}^l\mathbf{X}=\pi
+    \lim_{l \rightarrow \infty} \mathbf{H}^{(l)} = \lim_{l \rightarrow \infty} \hat{\mathbf{A}}^l\mathbf{X}=\pi
 \end{equation}
 其中 $\pi_{i,j}=\frac{d_j}{2|\mathcal{E}|}$ 与输入 $\mathbf{X}$ 无关。
 然后作者认为再使用了DropGCN计算得到的 $\mathbf{H}'$ 后：
 \begin{equation}
- |\mathbf{H}'^{(l)} - \pi'| \ge |\mathbf{H}^{(l)} - \pi|
+    |\mathbf{H}'^{(l)} - \pi'| \ge |\mathbf{H}^{(l)} - \pi|
 \end{equation}
 就不会那么与输入无关了。
 
@@ -506,14 +506,14 @@ g_p(\mathbf{\hat{A}}) = \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathb
 
 对于一个图，EGNN的边 ${\bf e}_{ij} = \{e_{ijd}\}_{d=1}^{2} \in [0, 1]^2$ 是这样构建的
 \begin{equation}
-{\bf e}_{ij}^0 = \left\{\begin{array}{cc} {[1||0]},& \mbox{if} ~ v_i \sim v_j, \\ {[0||1]},&  \mbox{if} ~ v_i \neq v_j, \\ {[0.5||0.5]},& \mbox{otherwise}, \end{array} \right.
+    {\bf e}_{ij}^0 = \left\{\begin{array}{cc} {[1||0]},& \mbox{if} ~ v_i \sim v_j, \\ {[0||1]},&  \mbox{if} ~ v_i \neq v_j, \\ {[0.5||0.5]},& \mbox{otherwise}, \end{array} \right.
 \end{equation}
 其中 $v_i \sim v_j$ 代表两者均已标注并且两者均属于同一类，而 $v_i \neq v_j$ 则代表两者均已标注且不属于同一类。
 节点按以下规则更新：
 \begin{equation}
-{\bf v}_{i}^{\ell} = f_v^{\ell}([\sum_{j} {\tilde e}_{ij1}^{\ell-1}{\bf v}_j^{\ell-1}||\sum_{j} {\tilde e}_{ij2}^{\ell-1}{\bf v}_j^{\ell-1}];\theta_v^{\ell})
+    {\bf v}_{i}^{\ell} = f_v^{\ell}([\sum_{j} {\tilde e}_{ij1}^{\ell-1}{\bf v}_j^{\ell-1}||\sum_{j} {\tilde e}_{ij2}^{\ell-1}{\bf v}_j^{\ell-1}];\theta_v^{\ell})
 \end{equation}
-其中 
+其中
 
 \begin{equation}
     {\tilde e}_{ijd} = \frac{e_{ijd}}{\sum_{k}e_{ikd}}
@@ -522,10 +522,10 @@ g_p(\mathbf{\hat{A}}) = \exp \left( -\lambda_2 \| \mathbf{\hat{A}}^\top - \mathb
 边则按照以下规则更新：
 
 \begin{align}
-{\bar e}_{ij1}^{\ell} & = \frac{f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{j}^{\ell}; \theta_e^{\ell})e_{ij1}^{\ell-1}}{\sum_{k}f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{k}^{\ell}; \theta_e^{\ell})e_{ik1}^{\ell-1}/(\sum_{k}e_{ik1}^{\ell-1})}, \\ 
-{\bar e}_{ij2}^{\ell} & =\frac{(1-f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{j}^{\ell}; \theta_e^{\ell}))e_{ij2}^{\ell-1}}{\sum_{k}(1-f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{k}^{\ell}; \theta_e^{\ell}))e_{ik2}^{\ell-1}/(\sum_{k}e_{ik2}^{\ell-1})},
-\\
-{\bf e}_{ij}^{\ell} & = \frac{{\bar {\bf e}}_{ij}^{\ell}} {\|{\bar {\bf e}}_{ij}^{\ell}\|_1}
+    {\bar e}_{ij1}^{\ell} & = \frac{f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{j}^{\ell}; \theta_e^{\ell})e_{ij1}^{\ell-1}}{\sum_{k}f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{k}^{\ell}; \theta_e^{\ell})e_{ik1}^{\ell-1}/(\sum_{k}e_{ik1}^{\ell-1})},        \\
+    {\bar e}_{ij2}^{\ell} & =\frac{(1-f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{j}^{\ell}; \theta_e^{\ell}))e_{ij2}^{\ell-1}}{\sum_{k}(1-f_{e}^{\ell}({\bf v}_{i}^{\ell}, {\bf v}_{k}^{\ell}; \theta_e^{\ell}))e_{ik2}^{\ell-1}/(\sum_{k}e_{ik2}^{\ell-1})},
+    \\
+    {\bf e}_{ij}^{\ell}   & = \frac{{\bar {\bf e}}_{ij}^{\ell}} {\|{\bar {\bf e}}_{ij}^{\ell}\|_1}
 \end{align}
 
 
