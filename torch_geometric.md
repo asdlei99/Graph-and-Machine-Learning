@@ -1,4 +1,6 @@
 # torch_geometric
+__本页面大部分内容来自 [Installation — pytorch\_geometric 1.3.2 documentation](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html)__
+
 这个东西我真的要吹爆，超级超级好用
 
 ## 安装
