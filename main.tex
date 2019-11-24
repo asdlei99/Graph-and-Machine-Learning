@@ -533,7 +533,39 @@ GCN计算公式为：
 图上的卷积变换是GCN的核心，虽然这一操作并不是非常地复杂，但是不得不承认该操作是非常耗时的。 Simple Graph Convolution (SGC)\cite{wu2019simplifying}的作者认为
 
 \part{应用}
-% \chapter{人脸聚类}
+\chapter{聚类}
+\section{Attributed Graph Clustering}
+传统的基于图的聚类算法通常是先通过图对其上节点进行嵌入（embedding），之后再使用传统方法在嵌入后得到的特征上进行聚类，Attributed Graph Clustering\cite{wang2019attributed} 在使用图卷积神经网络（GCN）使用一种注意力机制网络（attention network），相较于传统的两步（two-step）算法，本问题出的方法更直接地面对数据间的关联问题，而不会在嵌入这个地方绕个圈子。
+
+每一层的输出表示为
+\begin{equation}
+    z^{(l+1)}_i = \sigma(\sum_j \alpha_{ij} W z^{(l)}_j)
+\end{equation}
+其中 $z^{(m)}$ 表示网络的第 $m$ 层的输出， $\sigma(\cdot)$ 表示激活函数， $\alpha_{ij}$ 是注意力系数，由如下方法计算得出
+\begin{equation}
+    \alpha_{ij} = \frac{\exp (c_{ij})}{\sum_j \exp (c_{ij})}
+\end{equation}
+而系数 $c_{ij}$ 可以看成由2层神经网络计算得出
+\begin{equation}
+    c_{ij} = \mathbf{a} [W x_i\| W x_j]
+\end{equation}
+向量 $\mathbf{a} \in {R}^{2m}$ 代表神经网络输出的权重。当然，该系数的计算还可以加入一定和图相关的约束，详见论文。
+
+
+最后的loss 有两部分
+重构（Reconstruction）loss
+\begin{equation}
+    L_r = loss(A, \hat{A})
+\end{equation}
+其中
+\begin{equation}
+    \hat{A}_{ij} = \text{sigmoid} (z_i ^T z
+_j)
+\end{equation}
+聚类（clusgtering）loss
+\begin{equation}
+    L_c = D_{KL}(P\|Q)
+\end{equation}
 
 % \bibliographystyle{plain}
 \bibliography{cite}
