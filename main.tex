@@ -532,6 +532,19 @@ GCN计算公式为：
 \section{SGC}
 图上的卷积变换是GCN的核心，虽然这一操作并不是非常地复杂，但是不得不承认该操作是非常耗时的。 Simple Graph Convolution (SGC)\cite{wu2019simplifying}的作者认为
 
+
+\section{Attention-based Graph Neural Network}
+传统的图卷积神经网络的信息传递方法时固定不变的（每一层的传递的参数都是由输入确定的），Attention-based Graph Neural Network \cite{thekumparampil2018attentionbased}提出一种动态的传递方法，以在信息传递时用到当前层的特征之间的联系，而不仅仅是输入之间的联系，这样能够使得图卷积神经网络在传递信息时动态更新节点之间的联系，更好地发现输入之间的潜在联系。
+
+信息的传播（propagation）层 定义为
+\begin{align}
+    \tilde{X}^{(n)} &= P^{(n)}X^{(n)} \\
+    P^{(n)}_{i,j} &= \frac{\exp( \beta \cdot \cos(\mathbf{x}^{(n)}_i, \mathbf{x}^{(n)}_j))}
+    {\sum_{k \in \mathcal{N}(i)\cup \{ i \}}  \exp( \beta \cdot
+    \cos(\mathbf{x}^{(n)}_i, \mathbf{x}^{(n)}_k))}
+\end{align}
+，其中$\mathcal{N}(i)$代表节点$i$的相邻节点的集合。
+
 \part{应用}
 \chapter{聚类}
 \section{Attributed Graph Clustering}
